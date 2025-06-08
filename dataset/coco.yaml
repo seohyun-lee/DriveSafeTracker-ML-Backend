@@ -1,0 +1,19 @@
+path: ./dataset
+train: images/val
+val:   images/val
+
+nc: 13
+names:
+  0: Others
+  1: 거북등
+  2: 낮
+  3: 밤
+  4: 불량 보수
+  5: 쓰레기
+  6: 양호
+  7: 젖은 도로
+  8: 종방향
+  9: 차선
+  10: 차선 손상
+  11: 포트홀
+  12: 횡방향
