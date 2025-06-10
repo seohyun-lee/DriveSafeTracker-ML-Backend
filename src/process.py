@@ -1,50 +1,44 @@
-import os
+import os,glob
 from PIL import Image, ImageDraw
 
 # 1) 경로 설정
-img_dir = '/Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/images/val'
-txt_dir = '/Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/labels/val'  # 원본 YOLO seg‐txt
-mask_dir = '/Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/labels2/val'  # 생성할 PNG 마스크
+image_dir = '/Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/images/test'
+label_dir = '/Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/labels/test'  # 원본 YOLO seg‐txt
+mask_dir = '/Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/masks/test'  # 생성할 PNG 마스크
 
 os.makedirs(mask_dir, exist_ok=True)
 
+# 처리할 클래스 아이디 세트
+TARGET_CLASSES = {1, 4, 7, 9, 10}
 
-# 2) 클래스 ID → 픽셀값 매핑 (원래 클래스 ID 그대로 쓰면 됩니다)
-#    e.g. 클래스 ID 0~12 → 픽셀값 0~12
-def cls_to_val(cls_id: int) -> int:
-    return cls_id
+for lbl_path in glob.glob(os.path.join(label_dir, '*.txt')):
+    name = os.path.splitext(os.path.basename(lbl_path))[0]
+    # 이미지 경로 추정 (jpg 또는 png)
+    for ext in ('.jpg', '.png'):
+        img_path = os.path.join(image_dir, name + ext)
+        if os.path.isfile(img_path):
+            break
+    else:
+        continue  # 이미지가 없으면 건너뜀
 
-
-# 3) 각 이미지별로 .txt 읽어 마스크 생성
-for fname in os.listdir(txt_dir):
-    if not fname.endswith('.txt'):
-        continue
-    base = os.path.splitext(fname)[0]
-    img_path = os.path.join(img_dir, base + '.jpg')
-    txt_path = os.path.join(txt_dir, fname)
-
-    # 3-1) 이미지 크기 얻기
-    with Image.open(img_path) as im:
-        W, H = im.size
-
-    # 3-2) 빈 마스크 (L 모드, 0=background)
-    mask = Image.new('L', (W, H), 0)
+    img = Image.open(img_path)
+    w, h = img.size
+    # 빈 흑백 마스크 (픽셀값=0)
+    mask = Image.new('L', (w, h), 0)
     draw = ImageDraw.Draw(mask)
 
-    # 3-3) polygon 데이터 파싱
-    with open(txt_path, 'r') as f:
+    with open(lbl_path) as f:
         for line in f:
             parts = line.strip().split()
-            cls_id = int(float(parts[0]))
+            cls = int(parts[0])
+            if cls not in TARGET_CLASSES:
+                continue
             coords = list(map(float, parts[1:]))
-            # normalized → pixel 좌표 변환
-            pts = [
-                (coords[i] * W, coords[i + 1] * H)
-                for i in range(0, len(coords), 2)
-            ]
-            # 채우기
-            draw.polygon(pts, fill=cls_to_val(cls_id))
+            # 정규화 좌표 → 픽셀 좌표 리스트
+            polygon = [(coords[i] * w, coords[i+1] * h)
+                       for i in range(0, len(coords), 2)]
+            # 클래스 아이디를 픽셀 값으로 채움
+            draw.polygon(polygon, fill=cls)
 
-    # 3-4) PNG로 저장
-    mask.save(os.path.join(mask_dir, base + '.png'))
-    print(f"Saved mask for {base}")
+    # PNG로 저장
+    mask.save(os.path.join(mask_dir, name + '.png'))

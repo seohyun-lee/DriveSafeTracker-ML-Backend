@@ -1,19 +1,21 @@
-path: ./dataset
-train: images/val
-val:   images/val
+train: /Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/images/train
+val:  /Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/images/val
+test: /Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/images/test
 
-nc: 13
+train_masks: /Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/masks/train
+val_masks:   /Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/masks/val
+
 names:
   0: Others
-  1: 거북등
-  2: 낮
-  3: 밤
-  4: 불량 보수
-  5: 쓰레기
-  6: 양호
-  7: 젖은 도로
-  8: 종방향
-  9: 차선
-  10: 차선 손상
-  11: 포트홀
-  12: 횡방향
+  1: \uac70\ubd81\ub4f1
+  2: \ub0ae
+  3: \ubc24
+  4: \ubd88\ub7c9 \ubcf4\uc218
+  5: \uc4f0\ub808\uae30
+  6: \uc591\ud638
+  7: \uc816\uc740 \ub3c4\ub85c
+  8: \uc885\ubc29\ud5a5
+  9: \ucc28\uc120
+  10: \ucc28\uc120 \uc190\uc0c1
+  11: \ud3ec\ud2b8\ud640
+  12: \ud6a1\ubc29\ud5a5
