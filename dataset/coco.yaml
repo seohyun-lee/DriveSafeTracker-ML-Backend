@@ -1,8 +1,8 @@
-train: /Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/images/train
+train: /Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/images/val
 val:  /Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/images/val
 test: /Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/images/test
 
-train_masks: /Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/masks/train
+train_masks: /Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/masks/val
 val_masks:   /Users/leeseohyun/Documents/GitHub/DE-Project2-ML-Backend/dataset/masks/val
 
 names:
