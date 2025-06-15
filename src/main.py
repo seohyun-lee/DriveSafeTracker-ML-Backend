@@ -76,11 +76,20 @@ async def predict_hazard(file: UploadFile = File(...)):
         predictions = app.state.model.predict(image)
         predictions_for_frontend = []
         risk_list = []
-        # 분류 결과: 인덱스 기준 한글 클래스명 매핑
-        class_probs = list(predictions["classification"].values())
-        max_idx = int(np.argmax(class_probs))
-        max_conf = class_probs[max_idx]
-        day_or_night = DAMAGE_CLASSES.get(max_idx, "알수없음") if max_idx in [2, 3] else "알수없음"
+
+        # 분류 결과 (낮/밤) 처리
+        classification_output = predictions["classification"] # 예: {"day": 0.9, "night": 0.1}
+        
+        # 가장 확률이 높은 클래스 ("day" 또는 "night") 찾기
+        predicted_time_label = max(classification_output, key=classification_output.get)
+        
+        if predicted_time_label == "day":
+            day_or_night = DAMAGE_CLASSES[2]  # '낮'
+        elif predicted_time_label == "night":
+            day_or_night = DAMAGE_CLASSES[3]  # '밤'
+        else:
+            day_or_night = "알수없음" # 이 경우는 발생하지 않아야 함
+
         # YOLO 검출 결과: class id 기준 한글 클래스명 매핑
         for detection in predictions["detection"]["detections"]:
             class_id = detection["class"]
