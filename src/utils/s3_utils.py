@@ -39,8 +39,7 @@ class S3Uploader:
                 's3',
                 aws_access_key_id=self.aws_access_key_id,
                 aws_secret_access_key=self.aws_secret_access_key,
-                region_name=self.aws_region,
-                config=Config(s3={'addressing_style': 'path'})
+                region_name=self.aws_region
             )
             logger.info("S3 클라이언트 초기화 성공.")
         except Exception as e:
